@@ -9,12 +9,12 @@ export default (state = initialState, action) => {
   
   case 'ADD_TASK':
     var currentTasks = state.data;
-    currentTasks.push(Math.random())
+    currentTasks.push(action.payload)
     return { ...state, data: currentTasks }
 
   case 'REMOVE_TASK':
     var currentTasks = state.data;
-    currentTasks.splice(action.payload,1)
+    currentTasks.splice(action.payload, 1)
     return { ...state, data: currentTasks };
     
   default:
