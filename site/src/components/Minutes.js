@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { addTask, removeTask } from '../actions/minutesActions';
+import { addTask, removeTask, updateNote, addNote, removeNote } from '../actions/minutesActions';
 import { connect } from 'react-redux';
 
 import Button from '@material-ui/core/Button';
@@ -11,8 +11,10 @@ import CardContent from '@material-ui/core/CardContent';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import TextField from '@material-ui/core/TextField';
+import Input from '@material-ui/core/Input';
 
 import { styled } from '@material-ui/styles';
 
@@ -41,21 +43,41 @@ const emptyTask = {
 
 
 class Minutes extends Component {
-    
+
     addTask = () => {
         this.props.addTask();
     }
     removeTask = (idx) => {
         this.props.removeTask(idx);
-    } 
-
-    
+    }
+    addNote = (noteidx) => {
+        this.props.addNote(noteidx);
+    }
+    removeNote = (cardidx, noteidx) => {
+        this.props.removeNote({
+            card: cardidx,
+            note: noteidx
+        });
+    }
+    updateNote = (event, prev, cardidx, noteidx) => {
+        if (event.target.value != prev){
+            //console.log("Update me!");
+            this.props.updateNote({
+                value: event.target.value,
+                card: cardidx,
+                note: noteidx
+            })
+        } else {
+            //console.log("Does not need to be updated!");
+        }
+    }
 
     render() {
+        console.log(this.props.minutes.data)
         return (
             <div>
                 <Button variant="contained" color="secondary" onClick={this.addTask}>Add Task</Button>
-                
+
                 <div>
                     { this.props.minutes.data.map((d, i) => 
                     <Card key={i}>
@@ -66,41 +88,41 @@ class Minutes extends Component {
                             <List component="nav" aria-label="Secondary mailbox folders">
                                 {d.notes.map((note, idx) => 
                                     <ListItem key={idx} button>
-                                        <TextField label="Name" value={note} margin="normal" />
-                                        <DeleteIcon />
+                                        <Input
+                                            placeholder="Note"
+                                            defaultValue={note}
+                                            inputProps={{
+                                                'aria-label': 'Description',
+                                            }}
+                                            onBlur={(e)=>{this.updateNote(e, note, i, idx)}}
+                                        />
+                                        <DeleteIcon onClick={()=>{this.removeNote(i, idx)}} />
                                     </ListItem>
                                 )}
                             </List>
-                            <DeleteIcon onClick={()=>{this.removeTask(i)}} />
+                            <AddIcon onClick={()=>{this.addNote(i)}} />
                         </CardContent>
                     </Card>
                     )}
                 </div>
+
             </div>
         );
     }
 }
 
-/*
-<ListItemText primary={note} />
-<TextField
-        id="standard-name"
-        label="Name"
-        className={classes.textField}
-        value={values.name}
-        onChange={handleChange('name')}
-        margin="normal"
-      />
-*/
 
 const mapStateToProps = state => ({
     ...state
-    //data: state.minutes.data
 })
 
 const mapDispatchToProps = dispatch => ({
     addTask: (task) => dispatch(addTask(emptyTask)),
-    removeTask: (idx) => dispatch(removeTask(idx))
+    removeTask: (idx) => dispatch(removeTask(idx)),
+    
+    addNote: (idx) => dispatch(addNote(idx)),
+    removeNote: (idxs) => dispatch(removeNote(idxs)),
+    updateNote: (data) => dispatch(updateNote(data))  
 })
   
 export default connect(mapStateToProps, mapDispatchToProps)(Minutes);
