@@ -27,9 +27,11 @@ export default (state = initialState, action) => {
     })
     return { ...state, data: currentTasks }
   case 'REMOVE_TASK':
-    var currentTasks = state.data;
+    
+    var currentTasks = state.data.slice();
     currentTasks.splice(action.payload, 1)
     return { ...state, data: currentTasks };
+    
   
   //Notes
   case 'UPDATE_NOTE':
@@ -42,11 +44,9 @@ export default (state = initialState, action) => {
     currentTasks[action.payload].notes.push('');
     return { ...state, data: currentTasks }
   case 'REMOVE_NOTE':
-      var getData = state.data
-      var currentNotes = getData[action.payload.card].notes;
-      //console.log(currentTasks)
+      var getData = state.data.slice();
+      var currentNotes = getData[action.payload.card].notes.slice();
       currentNotes.splice(action.payload.note, 1);
-      //console.log(currentTasks)
       getData[action.payload.card].notes = currentNotes;
       return { ...state, data: getData }
     

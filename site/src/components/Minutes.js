@@ -27,7 +27,6 @@ const MyButton = styled(Button)({
     height: 48,
     padding: '0 30px',
   });
-//<MyButton variant="outlined" onClick={this.addTask}>Add Task</MyButton>
 
 
 const emptyTask = {
@@ -61,7 +60,6 @@ class Minutes extends Component {
     }
     updateNote = (event, prev, cardidx, noteidx) => {
         if (event.target.value != prev){
-            //console.log("Update me!");
             this.props.updateNote({
                 value: event.target.value,
                 card: cardidx,
@@ -80,6 +78,7 @@ class Minutes extends Component {
 
                 <div>
                     { this.props.minutes.data.map((d, i) => 
+                    
                     <Card key={i}>
                         <CardContent>
                             <Typography color="textSecondary" variant="h4" gutterBottom>{d.number} - {d.name}</Typography>
@@ -87,7 +86,7 @@ class Minutes extends Component {
                             <Typography color="textSecondary" gutterBottom>Notes</Typography>
                             <List component="nav" aria-label="Secondary mailbox folders">
                                 {d.notes.map((note, idx) => 
-                                    <ListItem key={idx} button>
+                                    <ListItem key={note} button>
                                         <Input
                                             placeholder="Note"
                                             defaultValue={note}
@@ -102,6 +101,7 @@ class Minutes extends Component {
                             </List>
                             <AddIcon onClick={()=>{this.addNote(i)}} />
                         </CardContent>
+                        <DeleteIcon onClick={()=>{this.removeTask(i)}} />
                     </Card>
                     )}
                 </div>
